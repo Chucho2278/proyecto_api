@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
+import Navbar from "./Navbar"; // Importamos el componente Navbar
 
 // Página de registro y login (combinada)
 const Home = () => {
@@ -307,13 +308,12 @@ const FuncionariosLogin = () => {
 
       if (response.ok) {
         setLoginError("");
-        // Redirigir a una página de administración si el login es exitoso
-        navigate("/admin");
+        navigate("/panel-pedidos");
       } else {
         setLoginError("Usuario o contraseña incorrectos");
       }
     } catch (error) {
-      console.error("Error al intentar logear:", error);
+      console.error("Error al intentar logear funcionario:", error);
       setLoginError("Error en el servidor");
     }
   };
@@ -350,29 +350,21 @@ const FuncionariosLogin = () => {
         <button type="submit" className="btn btn-primary">
           Iniciar sesión
         </button>
-        <button
-          onClick={() => navigate("/funcionarios-login")}
-          className="btn btn-warning"
-        >
-          Funcionarios
-        </button>
       </form>
     </div>
   );
 };
 
-// Componente principal de la aplicación
-const App = () => {
+// Componente principal
+const App: React.FC = () => {
   return (
     <Router>
+      {/* Barra de navegación */}
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
-        <Route
-          path="/funcionarios-login"
-          element={<FuncionariosLogin />}
-        />{" "}
-        {/* Nueva ruta */}
+        <Route path="/funcionarios-login" element={<FuncionariosLogin />} />
       </Routes>
     </Router>
   );
