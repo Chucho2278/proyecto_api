@@ -5,7 +5,7 @@ import {
   Route,
   useNavigate,
 } from "react-router-dom";
-import "./App.css"; // Asegúrate de tener este archivo para estilos adicionales
+import "./App.css";
 
 // Página de registro y login (combinada)
 const Home = () => {
@@ -40,7 +40,6 @@ const Home = () => {
 
       if (response.ok) {
         alert("Usuario creado con éxito, por favor ingresa en login");
-        // Limpia el formulario después del registro exitoso
         setNombre("");
         setTelefono("");
         setCorreo("");
@@ -70,11 +69,9 @@ const Home = () => {
       });
 
       if (response.ok) {
-        // Login exitoso, redirigir al menú
-        setLoginError(""); // Limpiar error si el login es exitoso
+        setLoginError("");
         navigate("/menu");
       } else {
-        // Error en el login
         setLoginError("Usuario o contraseña incorrectos");
       }
     } catch (error) {
@@ -207,7 +204,7 @@ const Home = () => {
   );
 };
 
-// Página de menú (solo accesible después del login)
+// Página de menú
 const Menu = () => {
   return (
     <div className="container mt-5">
@@ -232,7 +229,7 @@ const Menu = () => {
         <div className="col-md-6">
           <div className="card">
             <img
-              src="/images/burguer_2.jpg"
+              src="images/burguer_2.jpg"
               className="card-img-top"
               alt="Hamburguesa Premium"
             />
@@ -248,7 +245,7 @@ const Menu = () => {
         <div className="col-md-6 mt-4">
           <div className="card">
             <img
-              src="/images/perro_1.jpg"
+              src="images/perro_1.jpg"
               className="card-img-top"
               alt="Perro Caliente Clásico"
             />
@@ -264,7 +261,7 @@ const Menu = () => {
         <div className="col-md-6 mt-4">
           <div className="card">
             <img
-              src="/images/perro_2.jpg"
+              src="images/perro_2.jpg"
               className="card-img-top"
               alt="Perro Caliente Premium"
             />
@@ -277,6 +274,83 @@ const Menu = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+// Página de login de funcionarios
+const FuncionariosLogin = () => {
+  const [funcionarioUsuario, setFuncionarioUsuario] = useState("");
+  const [funcionarioContraseña, setFuncionarioContraseña] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const navigate = useNavigate();
+
+  const handleFuncionariosLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const loginData = {
+      usuario: funcionarioUsuario,
+      contraseña: funcionarioContraseña,
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/funcionarios-login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        }
+      );
+
+      if (response.ok) {
+        setLoginError("");
+        // Redirigir a una página de administración si el login es exitoso
+        navigate("/admin");
+      } else {
+        setLoginError("Usuario o contraseña incorrectos");
+      }
+    } catch (error) {
+      console.error("Error al intentar logear:", error);
+      setLoginError("Error en el servidor");
+    }
+  };
+
+  return (
+    <div className="container mt-5">
+      <h2>Login Funcionarios</h2>
+      <form onSubmit={handleFuncionariosLoginSubmit}>
+        <div className="mb-3">
+          <label htmlFor="funcionarioUsuario" className="form-label">
+            Usuario
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="funcionarioUsuario"
+            value={funcionarioUsuario}
+            onChange={(e) => setFuncionarioUsuario(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="funcionarioContraseña" className="form-label">
+            Contraseña
+          </label>
+          <input
+            type="password"
+            className="form-control"
+            id="funcionarioContraseña"
+            value={funcionarioContraseña}
+            onChange={(e) => setFuncionarioContraseña(e.target.value)}
+          />
+        </div>
+        {loginError && <div className="alert alert-danger">{loginError}</div>}
+        <button type="submit" className="btn btn-primary">
+          Iniciar sesión
+        </button>
+      </form>
     </div>
   );
 };

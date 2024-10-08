@@ -70,6 +70,27 @@ app.post("/api/login", (req, res) => {
   });
 });
 
+// Ruta para logear funcionarios
+app.post("/api/funcionarios-login", (req, res) => {
+  const { usuario, contraseña } = req.body;
+
+  const query =
+    "SELECT * FROM funcionarios WHERE usuario = ? AND contraseña = ?";
+
+  db.query(query, [usuario, contraseña], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error en el servidor" });
+    }
+    if (results.length > 0) {
+      // Usuario funcionario encontrado, login exitoso
+      res.status(200).json({ message: "Login exitoso" });
+    } else {
+      // Usuario o contraseña incorrectos
+      res.status(401).json({ error: "Usuario o contraseña incorrectos" });
+    }
+  });
+});
+
 // Iniciar el servidor
 const PORT = 3001;
 app.listen(PORT, () => {
