@@ -350,6 +350,12 @@ const FuncionariosLogin = () => {
         <button type="submit" className="btn btn-primary">
           Iniciar sesión
         </button>
+        <button
+          onClick={() => navigate("/funcionarios-login")}
+          className="btn btn-warning"
+        >
+          Funcionarios
+        </button>
       </form>
     </div>
   );
@@ -362,6 +368,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
+        <Route
+          path="/funcionarios-login"
+          element={<FuncionariosLogin />}
+        />{" "}
+        {/* Nueva ruta */}
       </Routes>
     </Router>
   );
