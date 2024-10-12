@@ -42,7 +42,6 @@ app.post("/api/register", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error al registrar el usuario" });
       }
-      // Usar el 'result' para devolver el ID del usuario recién creado
       res.status(201).json({
         message: "Usuario registrado con éxito",
         userId: result.insertId,
@@ -50,6 +49,7 @@ app.post("/api/register", (req, res) => {
     }
   );
 });
+
 // Ruta para logear usuarios
 app.post("/api/login", (req, res) => {
   const { usuario, contraseña } = req.body;
@@ -61,10 +61,8 @@ app.post("/api/login", (req, res) => {
       return res.status(500).json({ error: "Error en el servidor" });
     }
     if (results.length > 0) {
-      // Usuario encontrado, login exitoso
       res.status(200).json({ message: "Login exitoso" });
     } else {
-      // Usuario o contraseña incorrectos
       res.status(401).json({ error: "Usuario o contraseña incorrectos" });
     }
   });
@@ -82,12 +80,88 @@ app.post("/api/funcionarios-login", (req, res) => {
       return res.status(500).json({ error: "Error en el servidor" });
     }
     if (results.length > 0) {
-      // Usuario funcionario encontrado, login exitoso
       res.status(200).json({ message: "Login exitoso" });
     } else {
-      // Usuario o contraseña incorrectos
       res.status(401).json({ error: "Usuario o contraseña incorrectos" });
     }
+  });
+});
+
+// Ruta para registrar un nuevo funcionario
+app.post("/api/funcionarios", (req, res) => {
+  const { nombre, cargo, correo, usuario, contraseña } = req.body;
+  const query =
+    "INSERT INTO funcionarios (nombre, cargo, correo, usuario, contraseña) VALUES (?, ?, ?, ?, ?)";
+
+  db.query(
+    query,
+    [nombre, cargo, correo, usuario, contraseña],
+    (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error al registrar el funcionario" });
+      }
+      res.status(201).json({
+        message: "Funcionario registrado con éxito",
+        funcionarioId: result.insertId, // Usar result para obtener el ID del nuevo registro
+      });
+    }
+  );
+});
+
+// Ruta para obtener todos los funcionarios
+app.get("/api/funcionarios", (req, res) => {
+  const query = "SELECT * FROM funcionarios";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error al obtener los funcionarios" });
+    }
+    res.status(200).json(results); // Enviar todos los funcionarios
+  });
+});
+
+// Ruta para actualizar un funcionario
+app.put("/api/funcionarios/:id", (req, res) => {
+  const { id } = req.params;
+  const { nombre, cargo, correo, usuario, contraseña } = req.body;
+  const query =
+    "UPDATE funcionarios SET nombre = ?, cargo = ?, correo = ?, usuario = ?, contraseña = ? WHERE idfuncionarios = ?";
+
+  db.query(
+    query,
+    [nombre, cargo, correo, usuario, contraseña, id],
+    (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error al actualizar el funcionario" });
+      }
+      res.status(200).json({
+        message: "Funcionario actualizado con éxito",
+        affectedRows: result.affectedRows, // Usar result para informar cuántas filas se actualizaron
+      });
+    }
+  );
+});
+
+// Ruta para eliminar un funcionario
+app.delete("/api/funcionarios/:id", (req, res) => {
+  const { id } = req.params;
+  const query = "DELETE FROM funcionarios WHERE idfuncionarios = ?";
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error al eliminar el funcionario" });
+    }
+    res.status(200).json({
+      message: "Funcionario eliminado con éxito",
+      affectedRows: result.affectedRows, // Usar result para informar cuántas filas se eliminaron
+    });
   });
 });
 

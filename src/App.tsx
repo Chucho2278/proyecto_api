@@ -7,6 +7,10 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import Navbar from "./Navbar"; // Importamos el componente Navbar
+import ConfirmacionCompra from "./ConfirmacionCompra";
+import OpcionesPage from "./OpcionesPage";
+import FuncionariosPage from "./FuncionariosPage.tsx";
+import MenuPage from "./MenuPage";
 
 // Página de registro y login (combinada)
 const Home = () => {
@@ -28,6 +32,11 @@ const Home = () => {
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Verifica que todos los campos estén diligenciados
+    if (!nombre || !telefono || !correo || !usuario || !contraseña) {
+      alert("Por favor, diligencia todos los campos antes de registrar.");
+      return; // Salir de la función si hay campos vacíos
+    }
     const newUser = { nombre, telefono, correo, usuario, contraseña };
 
     try {
@@ -223,6 +232,7 @@ const Menu = () => {
               <p className="card-text">
                 Deliciosa hamburguesa clásica con todos los ingredientes.
               </p>
+              <h5 className="card-precio">17.000</h5>
             </div>
           </div>
         </div>
@@ -239,6 +249,7 @@ const Menu = () => {
               <p className="card-text">
                 Hamburguesa premium con ingredientes seleccionados.
               </p>
+              <h5 className="card-precio">24.000</h5>
             </div>
           </div>
         </div>
@@ -255,6 +266,7 @@ const Menu = () => {
               <p className="card-text">
                 El clásico perro caliente con salsa y papitas.
               </p>
+              <h5 className="card-precio">14.900</h5>
             </div>
           </div>
         </div>
@@ -271,6 +283,7 @@ const Menu = () => {
               <p className="card-text">
                 Perro caliente premium con ingredientes gourmet.
               </p>
+              <h5 className="card-precio">17.900</h5>
             </div>
           </div>
         </div>
@@ -308,7 +321,7 @@ const FuncionariosLogin = () => {
 
       if (response.ok) {
         setLoginError("");
-        navigate("/panel-pedidos");
+        navigate("/opciones");
       } else {
         setLoginError("Usuario o contraseña incorrectos");
       }
@@ -365,6 +378,10 @@ const App: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/funcionarios-login" element={<FuncionariosLogin />} />
+        <Route path="/confirmacion-compra" element={<ConfirmacionCompra />} />
+        <Route path="/opciones" element={<OpcionesPage />} />
+        <Route path="/funcionarios" element={<FuncionariosPage />} />
+        <Route path="/menu" element={<MenuPage />} />
       </Routes>
     </Router>
   );
